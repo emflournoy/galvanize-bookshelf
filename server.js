@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const app = express();
+var knex = require('./knex');
 
 app.disable('x-powered-by');
 
