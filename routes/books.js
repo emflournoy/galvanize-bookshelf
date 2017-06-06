@@ -24,7 +24,6 @@ router.get('/books/:id',(req,res,next) => {
 });
 
 router.post('/books',(req,res,next) => {
-  // res.set('Content-Type', 'text/json');
   knex('books')
   .insert(humps.decamelizeKeys(req.body), '*')
   .then((data)=>{
