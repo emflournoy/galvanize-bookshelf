@@ -17,7 +17,7 @@ router.get('/token',(req,res,next) => {
     res.status(200);
     return res.send(false);
   } else {
-    jwt.verify(req.cookies.token, 'superTopSecretKey', (err, decoded)=> {
+    jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, decoded)=> {
       if(err) {
         res.error(400);
       } else {
@@ -40,7 +40,7 @@ router.post('/token',(req,res,next) => {
           lastName: data[0].last_name,
           email: data[0].email
         }
-      let jwtoken = jwt.sign(userInfo, 'superTopSecretKey');
+      let jwtoken = jwt.sign(userInfo, process.env.JWT_KEY);
       res.cookie('token', jwtoken, {httpOnly: true}).send(userInfo)
     } else {
       errRes(res, `Bad email or password`);
