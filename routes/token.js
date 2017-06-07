@@ -9,8 +9,8 @@ const bcrypt = require('bcrypt');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
-
 router.use(cookieParser());
+
 
 router.get('/token',(req,res,next) => {
   if (Object.keys(req.cookies).length === 0){
@@ -19,9 +19,9 @@ router.get('/token',(req,res,next) => {
   } else {
     jwt.verify(req.cookies.token, 'superTopSecretKey', (err, decoded)=> {
       if(err) {
-        res.error(400)
+        res.error(400);
       } else {
-        return res.send(true)
+        return res.send(true);
       }
     });
   }
@@ -43,18 +43,19 @@ router.post('/token',(req,res,next) => {
       let jwtoken = jwt.sign(userInfo, 'superTopSecretKey');
       res.cookie('token', jwtoken, {httpOnly: true}).send(userInfo)
     } else {
-      res.status(400)
-      .set({ 'Content-Type': 'plain/text' })
-      .send(`Bad email or password`)
+      errRes(res, `Bad email or password`);
     }
   })
   .catch((error)=>{
-    res.status(400)
-    .set({ 'Content-Type': 'plain/text' })
-    .send(`Bad email or password`)
+    if(!req.body.email){
+      errRes(res, 'Email must not be blank');
+    } else if (!req.body.password) {
+      errRes(res, 'Password must not be blank');
+    } else {
+      errRes(res, `Bad email or password`);
+    }
   })
 });
-
 
 router.delete('/token',(req,res,next) => {
   if (Object.keys(req.body).length === 0){
@@ -62,6 +63,16 @@ router.delete('/token',(req,res,next) => {
     res.cookie('token', '', {httpOnly: true}).send()
   }
 });
+
+
+
+function errRes(res, phrase){
+  return res.status(400)
+  .set({'Content-Type': 'plain/text'})
+  .send(phrase);
+}
+
+
 
 
 
